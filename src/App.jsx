@@ -1,141 +1,452 @@
-import React, { useState, useMemo } from 'react';
-import CountUp from 'react-countup';
-import { 
-  Phone, MessageCircle, Calendar, Gauge, Fuel, 
-  Zap, Settings, Car, Palette, ChevronRight, X, 
-  ShieldCheck, Search, Coins, Filter
-} from 'lucide-react';
+import ProductPage from './ProductPage';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
-import rawData from './data.json';
 
-const StatBox = ({ end, suffix, text, icon: Icon }) => (
-  <div className="stat-box">
-    <Icon size={20} className="stat-icon" />
-    <div>
-      <span className="stat-number">
-        <CountUp end={end} duration={2.5} separator=" " />{suffix}
-      </span>
-      <span className="stat-text">{text}</span>
-    </div>
-  </div>
-);
+const HomePage = () => {
+  const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const [cars, setCars] = useState([]);
+  const [filteredCars, setFilteredCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [stats, setStats] = useState({
+    carsSold: 0,
+    yearsExperience: 0,
+    satisfiedClients: 0
+  });
+  const [filters, setFilters] = useState({
+    brand: '',
+    model: '',
+    priceRange: [0, 300000],
+    yearRange: [2000, 2025],
+    fuel: [],
+    mileageRange: [0, 300000]
+  });
 
-function App() {
-  const [selectedAuto, setSelectedAuto] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [fuelFilter, setFuelFilter] = useState('');
-  
-  const maxPriceData = useMemo(() => Math.max(...rawData.map(auto => parseInt(auto.cena?.toString().replace(/\s/g, '')) || 0)), []);
-  const maxKmData = useMemo(() => Math.max(...rawData.map(auto => parseInt(auto.przebieg?.toString().replace(/\s/g, '')) || 0)), []);
+  const carsPerPage = 12;
 
-  const [maxPrice, setMaxPrice] = useState(maxPriceData);
-  const [maxKm, setMaxKm] = useState(maxKmData);
+  const availableBrands = [...new Set(cars.map(c => c.brand).filter(Boolean))].sort();
+  const availableModels = [...new Set(
+    cars
+      .filter(c => !filters.brand || c.brand === filters.brand)
+      .map(c => c.model)
+      .filter(Boolean)
+  )].sort();
 
-  const getImageUrl = (auto) => auto.link_glowne || auto.uc_glowne || 'https://placehold.co/600x400';
+  const fuelTypes = ['Benzyna', 'Diesel', 'Hybryda', 'Elektryczny', 'LPG'];
 
-  const filteredCars = useMemo(() => {
-    return rawData.filter(auto => {
-      const price = parseInt(auto.cena?.toString().replace(/\s/g, '')) || 0;
-      const km = parseInt(auto.przebieg?.toString().replace(/\s/g, '')) || 0;
-      const matchSearch = `${auto.marka} ${auto.model}`.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchPrice = price <= maxPrice;
-      const matchKm = km <= maxKm;
-      const matchFuel = fuelFilter === '' || auto.paliwo === fuelFilter;
-      return matchSearch && matchPrice && matchKm && matchFuel;
+  useEffect(() => {
+    const onHashChange = () => setCurrentHash(window.location.hash);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const fetchCarsFromAPI = async () => {
+    const cached = localStorage.getItem('cars_cache');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.length > 0 && parsed[0].vin) {
+        return parsed;
+      }
+    }
+
+    const response = await fetch('/projekt-baza/data.json');
+    const data = await response.json();
+
+    localStorage.setItem('cars_cache_raw', JSON.stringify(data));
+
+    const mapped = data.map((auto) => ({
+      id: auto.id_wc_1,
+      title: `${auto.marka} ${auto.model}`,
+      brand: auto.marka,
+      model: auto.model,
+      version: auto.wersja || '',
+      year: parseInt(auto.rok) || 2000,
+      mileage: parseInt(auto.przebieg) || 0,
+      fuel: auto.paliwo || 'Benzyna',
+      price: parseInt(auto.cena) || 0,
+      engine: auto.pojemnosc || auto['pojemnosc-silnika'] || '---',
+      power: auto.moc || '---',
+      transmission: auto.skrzynia || 'Manualna',
+      color: auto.kolor || '',
+      link_glowne: auto.link_glowne || auto.uc_glowne || 'https://via.placeholder.com/400x300?text=Brak+zdjęcia',
+      slogan: auto.slogan1 || '',
+      sold: String(auto.status_sprzedany).toUpperCase() === 'TAK',
+      vin: auto.vin || '---',
+      description: auto.uc_beztla || '',
+      uc_glowne: auto.uc_glowne || '',
+      equip_audio: auto.equip_audio || '',
+      equip_komfort: auto.equip_komfort || '',
+      equip_bezpieczenstwo: auto.equip_bezpieczenstwo || '',
+      equip_systemy: auto.equip_systemy || '',
+    }));
+
+    localStorage.setItem('cars_cache', JSON.stringify(mapped));
+    return mapped;
+  };
+
+  const animateStats = useCallback(() => {
+    const targetStats = { carsSold: 4230, yearsExperience: 28, satisfiedClients: 92 };
+    const duration = 2000;
+    const stepTime = 20;
+    const steps = duration / stepTime;
+    let currentStep = 0;
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      setStats({
+        carsSold: Math.floor(targetStats.carsSold * progress),
+        yearsExperience: Math.floor(targetStats.yearsExperience * progress),
+        satisfiedClients: Math.floor(targetStats.satisfiedClients * progress)
+      });
+      if (currentStep >= steps) {
+        setStats(targetStats);
+        clearInterval(interval);
+      }
+    }, stepTime);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const loadCars = async () => {
+      setLoading(true);
+      const carsData = await fetchCarsFromAPI();
+      if (carsData && carsData.length > 0) {
+        setCars(carsData);
+        setFilteredCars(carsData);
+        const maxPrice = Math.max(...carsData.map(c => c.price));
+        const maxMileage = Math.max(...carsData.map(c => c.mileage));
+        setFilters(prev => ({
+          ...prev,
+          priceRange: [0, maxPrice],
+          mileageRange: [0, maxMileage],
+          yearRange: [2000, new Date().getFullYear()]
+        }));
+      }
+      setLoading(false);
+    };
+    loadCars();
+    animateStats();
+  }, [animateStats]);
+
+  useEffect(() => {
+    let filtered = [...cars];
+    if (filters.brand) {
+      filtered = filtered.filter(car => car.brand === filters.brand);
+    }
+    if (filters.model) {
+      filtered = filtered.filter(car => car.model === filters.model);
+    }
+    filtered = filtered.filter(car =>
+      car.price >= filters.priceRange[0] && car.price <= filters.priceRange[1]
+    );
+    filtered = filtered.filter(car =>
+      car.year >= filters.yearRange[0] && car.year <= filters.yearRange[1]
+    );
+    filtered = filtered.filter(car =>
+      car.mileage >= filters.mileageRange[0] && car.mileage <= filters.mileageRange[1]
+    );
+    if (filters.fuel.length > 0) {
+      filtered = filtered.filter(car => filters.fuel.includes(car.fuel));
+    }
+    setFilteredCars(filtered);
+    setCurrentPage(1);
+  }, [filters, cars]);
+
+  const handleBrandChange = (e) => {
+    setFilters(prev => ({ ...prev, brand: e.target.value, model: '' }));
+  };
+
+  const handleModelChange = (e) => {
+    setFilters(prev => ({ ...prev, model: e.target.value }));
+  };
+
+  const handlePriceRangeChange = (e) => {
+    setFilters(prev => ({ ...prev, priceRange: [prev.priceRange[0], parseInt(e.target.value)] }));
+  };
+
+  const handleMileageRangeChange = (e) => {
+    setFilters(prev => ({ ...prev, mileageRange: [prev.mileageRange[0], parseInt(e.target.value)] }));
+  };
+
+  const handleFuelToggle = (fuelType) => {
+    setFilters(prev => {
+      const current = prev.fuel;
+      const updated = current.includes(fuelType)
+        ? current.filter(f => f !== fuelType)
+        : [...current, fuelType];
+      return { ...prev, fuel: updated };
     });
-  }, [searchTerm, maxPrice, maxKm, fuelFilter]);
+  };
+
+  const resetFilters = () => {
+    if (cars.length === 0) return;
+    const maxPrice = Math.max(...cars.map(c => c.price));
+    const maxMileage = Math.max(...cars.map(c => c.mileage));
+    setFilters({
+      brand: '',
+      model: '',
+      priceRange: [0, maxPrice],
+      yearRange: [2000, new Date().getFullYear()],
+      fuel: [],
+      mileageRange: [0, maxMileage]
+    });
+  };
+
+  const goToProduct = (carId) => {
+    window.location.hash = `#/samochod/${carId}`;
+  };
+
+  const indexOfLastCar = currentPage * carsPerPage;
+  const indexOfFirstCar = indexOfLastCar - carsPerPage;
+  const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
+  const totalPages = Math.ceil(filteredCars.length / carsPerPage);
+  const formatPrice = (price) => price.toLocaleString('pl-PL') + ' zł';
+  const formatMileage = (mileage) => (mileage / 1000).toFixed(0) + 'k km';
+
+  if (currentHash.startsWith('#/samochod/')) {
+    return <ProductPage />;
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Ładowanie ofert...</p>
+      </div>
+    );
+  }
+
+  const maxPrice = cars.length > 0 ? Math.max(...cars.map(c => c.price)) : 300000;
+  const maxMileage = cars.length > 0 ? Math.max(...cars.map(c => c.mileage)) : 300000;
 
   return (
-    <div className="app-container">
-      <header className="hero-section">
-        <div className="hero-inner">
-          <h1 className="hero-logo">Auto Handel <span className="text-red">Puławy</span></h1>
-          <p className="hero-desc">Pewne auta używane od 1997 roku</p>
-          <div className="hero-stats">
-            <StatBox icon={Calendar} end={30} suffix="+" text="LAT TRADYCJI" />
-            <StatBox icon={Car} end={rawData.length} suffix="" text="AUT W OFERCIE" />
-            <StatBox icon={Zap} end={4176} suffix="+" text="SPRZEDANYCH" />
-            <StatBox icon={ShieldCheck} end={100} suffix="%" text="PEWNE AUTA" />
-          </div>
-        </div>
-      </header>
-
-      <section className="filters-area">
-        <div className="filters-card">
-          <div className="filter-row-top">
-            <div className="input-with-icon">
-              <Search size={18} />
-              <input type="text" placeholder="Szukaj marki lub modelu..." onChange={(e) => setSearchTerm(e.target.value)} />
+    <div className="homepage">
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1>Auto Handel Puławy</h1>
+          <p>Samochody z certyfikatem • Skup • Zamiana</p>
+          <div className="stats-container">
+            <div className="stat-item">
+              <div className="stat-number">{stats.carsSold}+</div>
+              <div className="stat-label">Sprzedanych aut</div>
             </div>
-            <div className="input-with-icon">
-              <Fuel size={18} />
-              <select onChange={(e) => setFuelFilter(e.target.value)}>
-                <option value="">Wszystkie paliwa</option>
-                <option value="Benzyna">Benzyna</option>
-                <option value="Diesel">Diesel</option>
-                <option value="LPG">Benzyna + LPG</option>
-              </select>
+            <div className="stat-item">
+              <div className="stat-number">{stats.yearsExperience}+</div>
+              <div className="stat-label">Lat doświadczenia</div>
             </div>
-          </div>
-          <div className="filter-row-bottom">
-            <div className="range-group">
-              <label>Cena do: <strong>{maxPrice.toLocaleString()} zł</strong></label>
-              <input type="range" min="0" max={maxPriceData} step="1000" value={maxPrice} onChange={(e) => setMaxPrice(parseInt(e.target.value))} />
-            </div>
-            <div className="range-group">
-              <label>Przebieg do: <strong>{maxKm.toLocaleString()} km</strong></label>
-              <input type="range" min="0" max={maxKmData} step="5000" value={maxKm} onChange={(e) => setMaxKm(parseInt(e.target.value))} />
+            <div className="stat-item">
+              <div className="stat-number">{stats.satisfiedClients}%</div>
+              <div className="stat-label">Zadowolonych klientów</div>
             </div>
           </div>
         </div>
-        <div className="results-info">Znaleziono: {filteredCars.length} ofert</div>
-      </section>
+      </div>
 
-      <main className="cars-grid">
-        {filteredCars.map((auto, i) => (
-          <div key={i} className="car-card" onClick={() => setSelectedAuto(auto)}>
-            <div className="car-card-img"><img src={getImageUrl(auto)} alt="car" /></div>
-            <div className="car-card-body">
-              <div className="car-card-tags"><span>{auto.rok}</span><span>{auto.paliwo}</span></div>
-              <h3>{auto.marka} {auto.model}</h3>
-              <div className="car-card-price">{auto.cena} zł</div>
-              <div className="car-card-footer">
-                <span><Gauge size={14}/> {auto.przebieg} km</span>
-                <span><Zap size={14}/> {auto.moc} KM</span>
-              </div>
+      <div className="main-container">
+        <aside className="filters-sidebar">
+          <div className="filters-header">
+            <h3>Filtruj ogłoszenia</h3>
+            <button onClick={resetFilters} className="reset-filters-btn">Resetuj filtry</button>
+          </div>
+
+          <div className="filter-group">
+            <label>Marka</label>
+            <select name="brand" value={filters.brand} onChange={handleBrandChange}>
+              <option value="">Wszystkie marki</option>
+              {availableBrands.map(brand => (
+                <option key={brand} value={brand}>{brand}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Model</label>
+            <select
+              name="model"
+              value={filters.model}
+              onChange={handleModelChange}
+              disabled={availableModels.length === 0}
+            >
+              <option value="">Wszystkie modele</option>
+              {availableModels.map(model => (
+                <option key={model} value={model}>{model}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>
+              Cena do: <strong>{filters.priceRange[1].toLocaleString('pl-PL')} zł</strong>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max={maxPrice}
+              step={1000}
+              value={filters.priceRange[1]}
+              onChange={handlePriceRangeChange}
+              className="range-slider"
+            />
+            <div className="range-labels">
+              <span>0 zł</span>
+              <span>{maxPrice.toLocaleString('pl-PL')} zł</span>
             </div>
           </div>
-        ))}
-      </main>
 
-      {selectedAuto && (
-        <div className="product-view">
-          <div className="product-inner">
-            <button className="btn-close" onClick={() => setSelectedAuto(null)}><X size={20}/> POWRÓT</button>
-            <div className="product-grid">
-              <div className="product-content">
-                <div className="gallery-main"><img src={getImageUrl(selectedAuto)} alt="foto" /></div>
-                <div className="details-card">
-                  <h3>Opis pojazdu</h3>
-                  <p>{selectedAuto.opis || "Zapraszamy do kontaktu telefonicznego."}</p>
-                </div>
-              </div>
-              <aside className="product-sidebar">
-                <div className="widget-sticky">
-                  <h2 className="w-title">{selectedAuto.marka} {selectedAuto.model}</h2>
-                  <div className="w-price">{selectedAuto.cena} zł</div>
-                  <div className="w-btns">
-                    <a href="tel:603616448" className="btn-tel"><Phone size={20}/> ZADZWOŃ</a>
-                    <a href="https://wa.me/48603616448" target="_blank" className="btn-wa"><MessageCircle size={20}/> WHATSAPP</a>
+          <div className="filter-group">
+            <label>
+              Przebieg do: <strong>{(filters.mileageRange[1] / 1000).toFixed(0)}k km</strong>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max={maxMileage}
+              step={5000}
+              value={filters.mileageRange[1]}
+              onChange={handleMileageRangeChange}
+              className="range-slider"
+            />
+            <div className="range-labels">
+              <span>0 km</span>
+              <span>{(maxMileage / 1000).toFixed(0)}k km</span>
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <label>
+              Rok od: <strong>{filters.yearRange[0]}</strong>
+            </label>
+            <input
+              type="range"
+              min="2000"
+              max={new Date().getFullYear()}
+              step={1}
+              value={filters.yearRange[0]}
+              onChange={(e) =>
+                setFilters(prev => ({
+                  ...prev,
+                  yearRange: [parseInt(e.target.value), prev.yearRange[1]]
+                }))
+              }
+              className="range-slider"
+            />
+            <div className="range-labels">
+              <span>2000</span>
+              <span>{new Date().getFullYear()}</span>
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <label>Rodzaj paliwa</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+              {fuelTypes.map(fuel => (
+                <div
+                  key={fuel}
+                  onClick={() => handleFuelToggle(fuel)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+                >
+                  <div style={{
+                    width: '18px',
+                    height: '18px',
+                    minWidth: '18px',
+                    border: '2px solid',
+                    borderColor: filters.fuel.includes(fuel) ? '#e30613' : '#ccc',
+                    borderRadius: '4px',
+                    background: filters.fuel.includes(fuel) ? '#e30613' : '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.15s',
+                  }}>
+                    {filters.fuel.includes(fuel) && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
                   </div>
+                  <span style={{ fontSize: '14px', color: '#333', fontWeight: 'normal', userSelect: 'none' }}>
+                    {fuel}
+                  </span>
                 </div>
-              </aside>
+              ))}
             </div>
           </div>
-        </div>
-      )}
+
+          <div className="filter-stats">
+            <span>Znaleziono: <strong>{filteredCars.length}</strong> ogłoszeń</span>
+          </div>
+        </aside>
+
+        <main className="cars-grid-container">
+          <div className="cars-header">
+            <h2>Dostępne pojazdy</h2>
+          </div>
+          <div className="cars-grid">
+            {currentCars.map(car => (
+              <div key={car.id} className="car-card">
+                {car.sold && <div className="sold-badge">SPRZEDANY</div>}
+                {car.slogan && !car.sold && <div className="slogan-badge">{car.slogan}</div>}
+                <div className="car-image">
+                  <img src={car.link_glowne} alt={car.title} loading="lazy" />
+                </div>
+                <div className="car-info">
+                  <div className="car-title-block">
+                    <h3 className="car-title">{car.title}</h3>
+                    {car.version && <div className="car-version">{car.version}</div>}
+                  </div>
+                  <div className="car-price">{formatPrice(car.price)}</div>
+                  <div className="car-specs-divider"></div>
+                  <div className="car-specs">
+                    <div className="car-spec">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      {car.year}
+                    </div>
+                    <div className="car-spec">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      {formatMileage(car.mileage)}
+                    </div>
+                    <div className="car-spec">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+                      {car.fuel}
+                    </div>
+                    <div className="car-spec">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="12" x2="17" y2="6"/><line x1="7" y1="12" x2="17" y2="18"/></svg>
+                      {car.transmission}
+                    </div>
+                  </div>
+                  <button className="details-btn" onClick={() => goToProduct(car.id)}>
+                    Zobacz szczegóły →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="page-btn"
+              >
+                ← Poprzednia
+              </button>
+              <span className="page-info">
+                Strona {currentPage} z {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="page-btn"
+              >
+                Następna →
+              </button>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
-}
+};
 
-export default App;
+export default HomePage;
