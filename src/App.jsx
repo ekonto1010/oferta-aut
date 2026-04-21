@@ -41,13 +41,13 @@ const HomePage = () => {
   }, []);
 
   const fetchCarsFromAPI = async () => {
-    const cached = localStorage.getItem('cars_cache');
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (parsed && parsed.length > 0 && parsed[0].vin) {
-        return parsed;
-      }
-    }
+    // const cached = localStorage.getItem('cars_cache');
+    // if (cached) {
+    //   const parsed = JSON.parse(cached);
+    //   if (parsed && parsed.length > 0 && parsed[0].vin) {
+    //     return parsed;
+    //   }
+    // }
 
     const response = await fetch('/projekt-baza/data.json');
     const data = await response.json();
