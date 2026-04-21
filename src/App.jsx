@@ -311,23 +311,48 @@ const HomePage = () => {
           </div>
           <div className="cars-grid">
             {currentCars.map(car => (
-              <div key={car.id} className="car-card">
-                {car.sold && <div className="sold-badge">SPRZEDANY</div>}
-                {car.slogan && !car.sold && <div className="slogan-badge">{car.slogan}</div>}
-                <div className="car-image">
-                  <img src={car.link_glowne} alt={car.title} loading="lazy" />
-                </div>
-                <div className="car-info">
-                  <div className="car-title-block">
-                    <h3 className="car-title">{car.title}</h3>
-                  </div>
-                  <div className="car-price">{formatPrice(car.price)}</div>
-                  <button className="details-btn" onClick={() => goToProduct(car.id)}>
-                    Zobacz szczegóły →
-                  </button>
-                </div>
-              </div>
-            ))}
+  <div key={car.id} className="car-card">
+    {car.sold && <div className="sold-badge">SPRZEDANY</div>}
+    {car.slogan && !car.sold && <div className="slogan-badge">{car.slogan}</div>}
+    <div className="car-image">
+      <img src={car.link_glowne} alt={car.title} loading="lazy" />
+    </div>
+    <div className="car-info">
+      <div className="car-title-block">
+        <h3 className="car-title">{car.title}</h3>
+        {car.version && <div className="car-version">{car.version}</div>}
+      </div>
+      
+      <div className="car-price">{formatPrice(car.price)}</div>
+      
+      <div className="car-specs-divider"></div>
+      
+      {/* TO JEST CZĘŚĆ, KTÓREJ CI BRAKOWAŁO - PRZYWRACAMY WYŚWIETLANIE DANYCH Z BACKUPU */}
+      <div className="car-specs">
+        <div className="car-spec">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          {car.year} {/* Pobiera rok z Twojego backupu */}
+        </div>
+        <div className="car-spec">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          {formatMileage(car.mileage)} {/* Pobiera przebieg z Twojego backupu */}
+        </div>
+        <div className="car-spec">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+          {car.fuel} {/* Pobiera paliwo z Twojego backupu */}
+        </div>
+        <div className="car-spec">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e30613" strokeWidth="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="12" x2="17" y2="6"/><line x1="7" y1="12" x2="17" y2="18"/></svg>
+          {car.transmission} {/* Pobiera skrzynię z Twojego backupu */}
+        </div>
+      </div>
+
+      <button className="details-btn" onClick={() => goToProduct(car.id)}>
+        Zobacz szczegóły →
+      </button>
+    </div>
+  </div>
+))}
           </div>
           {/* ... paginacja ... */}
         </main>
