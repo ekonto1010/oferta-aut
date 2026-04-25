@@ -1,0 +1,26 @@
+name: Ręczna Aktualizacja Strony (Force Build)
+on:
+  workflow_dispatch: # To dodaje przycisk "Run workflow"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # lub build, zależnie od Twojej konfiguracji Reacta
+          branch: gh-pages
