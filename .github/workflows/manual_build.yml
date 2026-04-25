@@ -1,10 +1,12 @@
-name: Ręczna Aktualizacja Strony
+name: Reczna Aktualizacja Strony
 on:
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -12,5 +14,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: . # Wysyła wszystko z głównego folderu
+          folder: .
           branch: gh-pages
