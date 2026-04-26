@@ -2,41 +2,39 @@ name: Automatyczna Aktualizacja (Codziennie 17:30)
 
 on:
   schedule:
-    - cron: '30 17 * * *'  # Codziennie o 17:30
-  workflow_dispatch:  # Też ręcznie można uruchomić
+    - cron: '30 17 * * *'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   update-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Pobierz kod
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2. Python - zaktualizuj dane z Google Sheets
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
-      - name: Aktualizuj dane z Google Sheets
+
+      - name: Aktualizuj dane
         run: |
           pip install requests
           python update.py
 
-      # 3. Node.js - zbuduj stronę
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
-      
+          node-version: '22'
+
       - name: Install and Build
         run: |
           npm install
           npm run build
 
-      # 4. Deploy
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
