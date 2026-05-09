@@ -354,7 +354,18 @@ const HomePage = () => {
   </div>
 ))}
           </div>
-          {/* ... paginacja ... */}
+          {/* Przycisk "Zobacz więcej" */}
+          {currentPage < totalPages && (
+            <div style={{ textAlign: 'center', margin: '30px 0' }}>
+              <button
+                className="details-btn"
+                style={{ padding: '14px 40px', fontSize: '16px' }}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+              >
+                Zobacz więcej ({filteredCars.length - currentPage * carsPerPage} pozostałych) →
+              </button>
+            </div>
+          )}
         </main>
       </div>
     </div>
