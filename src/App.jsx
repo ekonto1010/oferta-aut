@@ -204,7 +204,7 @@ const HomePage = () => {
 
   const indexOfLastCar = currentPage * carsPerPage;
   const indexOfFirstCar = indexOfLastCar - carsPerPage;
-  const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
+  const currentCars = filteredCars.slice(0, currentPage * carsPerPage);
   const totalPages = Math.ceil(filteredCars.length / carsPerPage);
   const formatPrice = (price) => price.toLocaleString('pl-PL') + ' zł';
   const formatMileage = (mileage) => (mileage / 1000).toFixed(0) + 'k km';
