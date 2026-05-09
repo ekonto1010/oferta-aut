@@ -1,4 +1,6 @@
 import ProductPage from './ProductPage';
+import ContactPage from './ContactPage';
+import BlogPage from './BlogPage';
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
@@ -212,7 +214,12 @@ const HomePage = () => {
   if (currentHash.startsWith('#/samochod/')) {
     return <ProductPage />;
   }
-
+  if (currentHash === '#/kontakt') {
+  return <ContactPage />;
+}
+if (currentHash === '#/blog' || currentHash.startsWith('#/blog')) {
+  return <BlogPage />;
+}
   if (loading) {
     return (
       <div className="loading-container">
@@ -234,7 +241,7 @@ const HomePage = () => {
            <h1>Auto Handel Puławy</h1>
            <p>Samochody z certyfikatem • Skup • Zamiana</p>
            <div className="stats-container">
-             <div className="stat-item">
+                          <div className="stat-item">
                <div className="stat-number">{stats.carsSold}+</div>
                <div className="stat-label">Sprzedanych aut</div>
              </div>
@@ -246,6 +253,14 @@ const HomePage = () => {
                <div className="stat-number">{stats.satisfiedClients}%</div>
                <div className="stat-label">Zadowolonych klientów</div>
              </div>
+             <div style={{ marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+  <button onClick={() => { window.location.hash = '#/blog'; }} className="reset-filters-btn">
+    📝 Blog
+  </button>
+  <button onClick={() => { window.location.hash = '#/kontakt'; }} className="reset-filters-btn">
+    📞 Kontakt
+  </button>
+</div>
            </div>
          </div>
       </div>
