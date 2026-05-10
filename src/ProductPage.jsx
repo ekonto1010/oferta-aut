@@ -140,7 +140,7 @@ const ProductPage = () => {
   return (
     <div>
       <Navbar />
-      </div>
+      
     <div className="product-page">
       <div className="product-wrapper">
         <div className="product-gallery">
@@ -240,6 +240,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
