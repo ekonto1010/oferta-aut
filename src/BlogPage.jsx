@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwu836OeL21taIDhmEyJdhB1h3izeiCONfFKe_qMrTbZfsgF4Md_vgLmQ4CT8_7iGsDAA/exec";
+const CACHE_KEY = 'blog_cache';
+const CACHE_TTL = 10 * 60 * 1000; // 10 minut
 
 const BlogPage = () => {
   const [wpisy, setWpisy] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [aktywny, setAktywny] = useState(null); // ID otwartego wpisu
+  const [aktywny, setAktywny] = useState(null);
 
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL) {
+          setWpisy(Array.isArray(data) ? data : []);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) {}
+
     fetch(`${GAS_URL}?tab=blog`)
       .then(r => r.json())
-      .then(data => { setWpisy(Array.isArray(data) ? data : []); setLoading(false); })
+      .then(data => {
+        const lista = Array.isArray(data) ? data : [];
+        setWpisy(lista);
+        setLoading(false);
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data: lista, ts: Date.now() }));
+      })
       .catch(() => setLoading(false));
   }, []);
-
-  const goHome = () => { window.location.hash = ''; };
 
   const formatData = (raw) => {
     if (!raw) return '';
@@ -24,10 +42,13 @@ const BlogPage = () => {
   };
 
   if (loading) return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>Ładowanie wpisów...</p>
-    </div>
+    <>
+      <Navbar />
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Ładowanie wpisów...</p>
+      </div>
+    </>
   );
 
   // Widok pojedynczego wpisu
@@ -36,6 +57,7 @@ const BlogPage = () => {
     if (!wpis) return null;
     return (
       <div className="homepage">
+        <Navbar />
         <div className="hero-section" style={{ minHeight: '180px' }}>
           <div className="hero-content">
             <h1>Blog</h1>
@@ -57,9 +79,6 @@ const BlogPage = () => {
             <button onClick={() => setAktywny(null)} className="reset-filters-btn" style={{ padding: '12px 24px' }}>
               ← Wszystkie wpisy
             </button>
-            <button onClick={goHome} className="reset-filters-btn" style={{ padding: '12px 24px' }}>
-              Wróć do oferty
-            </button>
           </div>
         </div>
       </div>
@@ -69,6 +88,7 @@ const BlogPage = () => {
   // Lista wpisów
   return (
     <div className="homepage">
+      <Navbar />
       <div className="hero-section" style={{ minHeight: '200px' }}>
         <div className="hero-content">
           <h1>Blog</h1>
@@ -104,12 +124,6 @@ const BlogPage = () => {
             ))}
           </div>
         )}
-
-        <div style={{ textAlign: 'center', marginTop: '48px' }}>
-          <button onClick={goHome} className="reset-filters-btn" style={{ padding: '12px 30px' }}>
-            ← Wróć do oferty
-          </button>
-        </div>
       </div>
     </div>
   );

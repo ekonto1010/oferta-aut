@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwu836OeL21taIDhmEyJdhB1h3izeiCONfFKe_qMrTbZfsgF4Md_vgLmQ4CT8_7iGsDAA/exec";
+const CACHE_KEY = 'kontakt_cache';
+const CACHE_TTL = 10 * 60 * 1000; // 10 minut
 
 const ContactPage = () => {
   const [kontakt, setKontakt] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL) {
+          setKontakt(data);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) {}
+
     fetch(`${GAS_URL}?tab=kontakt`)
       .then(r => r.json())
-      .then(data => { setKontakt(data); setLoading(false); })
+      .then(data => {
+        setKontakt(data);
+        setLoading(false);
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+      })
       .catch(() => setLoading(false));
   }, []);
 
-  const goHome = () => { window.location.hash = ''; };
-
   if (loading) return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>Ładowanie...</p>
-    </div>
+    <>
+      <Navbar />
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Ładowanie...</p>
+      </div>
+    </>
   );
 
   const tel = kontakt?.telefon || '603616448';
@@ -30,7 +50,8 @@ const ContactPage = () => {
 
   return (
     <div className="homepage">
-      {/* HERO */}
+      <Navbar />
+
       <div className="hero-section" style={{ minHeight: '200px' }}>
         <div className="hero-content">
           <h1>Kontakt</h1>
@@ -40,7 +61,6 @@ const ContactPage = () => {
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '40px 20px' }}>
 
-        {/* KARTY KONTAKTOWE */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '40px' }}>
 
           <a href={`tel:${telRaw}`} style={{ textDecoration: 'none' }}>
@@ -73,7 +93,6 @@ const ContactPage = () => {
 
         </div>
 
-        {/* MAPA */}
         <div style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginBottom: '40px' }}>
           <iframe
             title="Mapa Auto Handel Puławy"
@@ -87,10 +106,9 @@ const ContactPage = () => {
           />
         </div>
 
-        {/* PRZYCISKI CTA */}
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <a href={`tel:${telRaw}`} className="product-call-btn" style={{ textDecoration: 'none', display: 'inline-block', padding: '16px 40px', fontSize: '16px' }}>
-            Zadzwoń teraz: {tel}
+            Zadzwoń: {tel}
           </a>
           <a
             href={`https://wa.me/${wa}?text=Dzień dobry, chciałem zapytać o ofertę.`}
@@ -102,11 +120,6 @@ const ContactPage = () => {
           </a>
         </div>
 
-        <div style={{ textAlign: 'center' }}>
-          <button onClick={goHome} className="reset-filters-btn" style={{ padding: '12px 30px' }}>
-            ← Wróć do oferty
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -121,6 +134,7 @@ const cardStyle = {
   boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
   cursor: 'default',
   transition: 'transform 0.2s',
+  height: '100%',
 };
 
 const iconStyle = {

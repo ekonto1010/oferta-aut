@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
 import './App.css';
+import Navbar from './Navbar';
 
 const ProductPage = () => {
   const [car, setCar] = useState(null);
@@ -137,6 +138,9 @@ const ProductPage = () => {
   if (!car) return <div className="loading-container"><h2>Nie znaleziono pojazdu</h2></div>;
 
   return (
+    <div>
+      <Navbar />
+      </div>
     <div className="product-page">
       <div className="product-wrapper">
         <div className="product-gallery">

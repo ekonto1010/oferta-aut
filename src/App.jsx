@@ -3,6 +3,8 @@ import ContactPage from './ContactPage';
 import BlogPage from './BlogPage';
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import Navbar from './Navbar';
+
 
 const HomePage = () => {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
@@ -233,7 +235,9 @@ if (currentHash === '#/blog' || currentHash.startsWith('#/blog')) {
   const maxMileage = cars.length > 0 ? Math.max(...cars.map(c => c.mileage)) : 300000;
 
   return (
+    
     <div className="homepage">
+      <Navbar />
       {/* Tutaj reszta Twojego JSX, bez zmian */}
       <div className="hero-section">
          {/* ... (treść hero) */}
