@@ -91,6 +91,16 @@ const ProductPage = () => {
       return num || 0;
     };
 
+   const fixDescription = (html) => {
+  if (!html) return '';
+  return html
+    .replace(/--------+/g, '')   // usuwa linie myślników
+    .replace(/\n{3,}/g, '\n\n')  // max 2 nowe linie z rzędu
+    .replace(/\n/g, '<br>');
+};
+
+
+
     // POPRAWKA 3: dekodowanie HTML entities na wypadek podwójnego escapowania
     const decodeHtml = (html) => {
       if (!html) return '';
@@ -114,7 +124,7 @@ const ProductPage = () => {
       vin: rawCar.vin || 'Dostępny na życzenie',
       body: rawCar.typ_nadwozia || '---',
       drive: rawCar.naped || '---',
-      description: decodeHtml(rawCar.uc_beztla || rawCar.opis || ''),
+      description: decodeHtml(fixDescription(rawCar.uc_beztla || rawCar.opis || '')),
       slogan: rawCar.slogan1 || '',
       sold: String(rawCar.status_sprzedany).toUpperCase() === 'TAK',
       phone: '603616448',
