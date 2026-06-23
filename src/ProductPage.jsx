@@ -191,6 +191,7 @@ const ProductPage = () => {
               <h3>Opis pojazdu</h3>
 <div className="description" dangerouslySetInnerHTML={{ __html: car.description }} />
           </div>
+          </div>
 
           <div className="product-details">
             <div className="details-section">
