@@ -20,6 +20,16 @@ const ProductPage = () => {
   }, []);
 
   useEffect(() => {
+  if (!loading && car) {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+}, [loading, car]);
+
+
+  useEffect(() => {
     if (images.length === 0) return;
     const lightbox = new PhotoSwipeLightbox({
       gallery: '#gallery-trigger',
