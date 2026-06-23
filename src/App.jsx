@@ -86,8 +86,11 @@ const HomePage = () => {
         equip_systemy: auto.equip_systemy || '',
       }));
 
-      localStorage.setItem('cars_cache', JSON.stringify(mapped));
-      return mapped;
+      // localStorage.setItem('cars_cache', JSON.stringify(mapped));
+      // return mapped;
+      const sorted = mapped.sort((a, b) => b.id - a.id); // najnowsze pierwsze
+      localStorage.setItem('cars_cache', JSON.stringify(sorted));
+      return sorted;
     } catch (error) {
       console.error("Błąd krytyczny pobierania:", error.message);
       return [];
