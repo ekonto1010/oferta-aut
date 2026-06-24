@@ -1,0 +1,30 @@
+name: Reczna Aktualizacja Strony
+
+on:
+  workflow_dispatch: # Generuje przycisk w panelu GitHub
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobierz kod z mastera
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Konfiguracja Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalacja i Budowanie Vite
+        run: |
+          npm ci
+          npm run build
+
+      - name: Wdrożenie na GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+
