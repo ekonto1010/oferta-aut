@@ -3,6 +3,7 @@ import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
 import './App.css';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 const ProductPage = () => {
   const [car, setCar] = useState(null);
@@ -267,6 +268,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

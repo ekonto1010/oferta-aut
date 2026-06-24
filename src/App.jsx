@@ -4,6 +4,7 @@ import BlogPage from './BlogPage';
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import Navbar from './Navbar';
+import Footer from './Footer'; // <--- TUTAJ DODAJEMY IMPORT
 
 const slugify = (str) => str
   .toLowerCase()
@@ -374,6 +375,7 @@ const App = () => {
           )}
         </main>
       </div>
+      <Footer /> {/* <--- TUTAJ WRZUCAMY STOPKĘ */}
     </div>
   );
 };
