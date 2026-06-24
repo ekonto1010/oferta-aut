@@ -12,7 +12,7 @@ const slugify = (str) => str
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-|-$/g, '');
 
-const HomePage = () => {
+const App = () => {
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [cars, setCars] = useState([]);
   const [filteredCars, setFilteredCars] = useState([]);
@@ -378,4 +378,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default App;
