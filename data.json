@@ -88,7 +88,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 34420,
-    "id_wc_2": 20213,
+    "id_wc_2": 20504,
     "marka": "Peugeot",
     "model": 5008,
     "rok": 2010,
@@ -104,7 +104,7 @@
     "uc_beztla": "",
     "paliwo": "Diesel",
     "skrzynia-biegow": "Manualna",
-    "typ_nadwozia": "Auta Minivan",
+    "typ_nadwozia": "Minivan",
     "kolor": "Szary",
     "naped": "Na przednie koła",
     "status": "",
@@ -130,7 +130,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 32477,
-    "id_wc_2": 32477,
+    "id_wc_2": 20506,
     "marka": "Mercedes-benz",
     "model": "Glk",
     "rok": 2009,
@@ -298,7 +298,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 35926,
-    "id_wc_2": 35926,
+    "id_wc_2": 20510,
     "marka": "Opel",
     "model": "Astra",
     "rok": 2010,
@@ -424,7 +424,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 35931,
-    "id_wc_2": 35931,
+    "id_wc_2": 20512,
     "marka": "Land Rover",
     "model": "Discovery V 2.0 D 180 KM | 142k | Certyfikat",
     "rok": 2017,
@@ -466,7 +466,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 35935,
-    "id_wc_2": 35935,
+    "id_wc_2": 20514,
     "marka": "Renault",
     "model": "Scenic | Nowy Rozrząd | Certyfikat",
     "rok": 2012,
@@ -508,7 +508,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 35938,
-    "id_wc_2": 35938,
+    "id_wc_2": 20516,
     "marka": "Peugeot",
     "model": 308,
     "rok": 2015,
@@ -592,7 +592,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 35956,
-    "id_wc_2": 35956,
+    "id_wc_2": 20518,
     "marka": "Fiat",
     "model": "Talento",
     "rok": 2018,
@@ -844,7 +844,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36012,
-    "id_wc_2": 19944,
+    "id_wc_2": 20520,
     "marka": "Audi",
     "model": "A3 sportback",
     "rok": 2016,
@@ -886,7 +886,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36019,
-    "id_wc_2": 36019,
+    "id_wc_2": 20522,
     "marka": "Mitsubishi",
     "model": "Outlander",
     "rok": 2015,
@@ -928,7 +928,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36020,
-    "id_wc_2": 20011,
+    "id_wc_2": 20524,
     "marka": "Volvo",
     "model": "V40",
     "rok": 2012,
@@ -1138,7 +1138,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36064,
-    "id_wc_2": 36064,
+    "id_wc_2": 20526,
     "marka": "Renault",
     "model": "Kadjar",
     "rok": 2018,
@@ -1180,7 +1180,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36067,
-    "id_wc_2": 20468,
+    "id_wc_2": 20528,
     "marka": "Renault",
     "model": "Megane",
     "rok": 2009,
@@ -1222,7 +1222,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36069,
-    "id_wc_2": "",
+    "id_wc_2": 20530,
     "marka": "Mazda",
     "model": "Cx-5",
     "rok": 2012,
@@ -1264,7 +1264,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36072,
-    "id_wc_2": 20482,
+    "id_wc_2": 20532,
     "marka": "Peugeot",
     "model": 308,
     "rok": 2017,
@@ -1306,7 +1306,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36076,
-    "id_wc_2": 20478,
+    "id_wc_2": 20534,
     "marka": "Peugeot",
     "model": 308,
     "rok": 2014,
@@ -1348,7 +1348,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36077,
-    "id_wc_2": 20463,
+    "id_wc_2": 20536,
     "marka": "Chevrolet",
     "model": "Corvette",
     "rok": 2007,
@@ -1726,7 +1726,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36087,
-    "id_wc_2": 36087,
+    "id_wc_2": 20538,
     "marka": "Audi",
     "model": "A6 limousine",
     "rok": 2014,
@@ -1768,7 +1768,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36088,
-    "id_wc_2": 20465,
+    "id_wc_2": "",
     "marka": "Volkswagen",
     "model": "Touran | 7 osob. | ",
     "rok": 2015,
@@ -1852,7 +1852,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36092,
-    "id_wc_2": 36092,
+    "id_wc_2": 20540,
     "marka": "Nissan",
     "model": "Qashqai",
     "rok": 2012,
@@ -1894,7 +1894,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36095,
-    "id_wc_2": 36095,
+    "id_wc_2": 20542,
     "marka": "Citroën",
     "model": "C4 Cactus | 211tys. przeb. |  Certyfikat",
     "rok": 2018,
@@ -1936,7 +1936,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36101,
-    "id_wc_2": "",
+    "id_wc_2": 20544,
     "marka": "Suzuki",
     "model": "Swift",
     "rok": 2014,
@@ -1978,7 +1978,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36102,
-    "id_wc_2": 20417,
+    "id_wc_2": 20546,
     "marka": "Opel ",
     "model": "Insignia 1.4T Benzyna",
     "rok": 2013,
@@ -2020,7 +2020,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36104,
-    "id_wc_2": 20455,
+    "id_wc_2": 20548,
     "marka": "Opel",
     "model": "Corsa",
     "rok": 2014,
@@ -2062,7 +2062,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36105,
-    "id_wc_2": 20457,
+    "id_wc_2": 20550,
     "marka": "Opel",
     "model": "Zafira",
     "rok": 2016,
@@ -2104,7 +2104,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36106,
-    "id_wc_2": 20459,
+    "id_wc_2": 20552,
     "marka": "Opel",
     "model": "Zafira",
     "rok": 2014,
@@ -2146,7 +2146,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36107,
-    "id_wc_2": 20461,
+    "id_wc_2": 20554,
     "marka": "Peugeot",
     "model": 308,
     "rok": 2017,
@@ -2188,7 +2188,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36123,
-    "id_wc_2": "",
+    "id_wc_2": 20556,
     "marka": "Volvo",
     "model": "V40",
     "rok": 2017,
@@ -2230,7 +2230,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36124,
-    "id_wc_2": "",
+    "id_wc_2": 20558,
     "marka": "Kia",
     "model": "Ceed",
     "rok": 2017,
@@ -2272,7 +2272,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36125,
-    "id_wc_2": "",
+    "id_wc_2": 20560,
     "marka": "Toyota",
     "model": "Avensis",
     "rok": 2015,
@@ -2314,7 +2314,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36127,
-    "id_wc_2": "",
+    "id_wc_2": 20562,
     "marka": "Audi",
     "model": "Q5",
     "rok": 2009,
