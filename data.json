@@ -886,7 +886,7 @@
       "valueType": "IMAGE"
     },
     "id_wc_1": 36101,
-    "id_wc_2": 36101,
+    "id_wc_2": 22074,
     "marka": "Suzuki",
     "model": "Swift",
     "rok": 2014,
@@ -916,7 +916,7 @@
     "wersja": "1.2 Premium",
     "slogan1": "przebieg 184 232 km",
     "slogan2": "LPG",
-    "status_sprzedany": "NIE",
+    "status_sprzedany": "TAK",
     " LINK_LINK-PUSTE-AUTO": "",
     "opis": "",
     "opis_ig": "",
